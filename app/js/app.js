@@ -12,15 +12,40 @@ app.config(function($routeProvider) {
     controller: 'HomeController'
   });
 
+  $routeProvider.when('/detail/:id', {
+    templateUrl: 'detail.html',
+    controller: 'DetailController'
+  });
+
   $routeProvider.otherwise({ redirectTo: '/login' });
 
+});
+
+app.factory('Houses', function() {
+  var items = [
+    {id: 1, fileName: "demo1.jpg", desc: "Im the first house."},
+    {id: 2, fileName: "demo2.jpg", desc: "Im the second house."}
+  ];
+
+  return {
+    Items: items,
+    getItemById: function(id) {
+      var found = false;
+      items.forEach(function(item) {
+        if (item.id == id) {
+          found = item;
+        }
+      });
+      return found;
+    }
+  };
 });
 
 app.factory("AuthenticationService", function($location) {
   return {
     login: function(credentials) {
-      if (credentials.username !== "ralph" || credentials.password !== "wiggum") {
-        alert("Username must be 'ralph', password must be 'wiggum'");
+      if (credentials.username !== "aaa" || credentials.password !== "aaa") {
+        alert("Username must be 'aaa', password must be 'aaa'");
       } else {
         $location.path('/home');
       }
@@ -39,28 +64,17 @@ app.controller("LoginController", function($scope, $location, AuthenticationServ
   }
 });
 
-app.controller("HomeController", function($scope, AuthenticationService) {
+app.controller("HomeController", function($scope, $location, AuthenticationService, Houses, $routeParams) {
   $scope.title = "Awesome Home";
   $scope.message = "Mouse Over these images to see a directive at work!";
+  $scope.houses = Houses.Items;
 
   $scope.logout = function() {
     AuthenticationService.logout();
   };
+
 });
 
-app.directive("showsMessageWhenHovered", function() {
-  return {
-    restrict: "A", // A = Attribute, C = CSS Class, E = HTML Element, M = HTML Comment
-    link: function(scope, element, attributes) {
-      var originalMessage = scope.message;
-      element.bind("mouseenter", function() {
-        scope.message = attributes.message;
-        scope.$apply();
-      });
-      element.bind("mouseleave", function() {
-        scope.message = originalMessage;
-        scope.$apply();
-      });
-    }
-  };
+app.controller("DetailController", function($scope, $routeParams, Houses) {
+  $scope.house = Houses.getItemById($routeParams.id);
 });

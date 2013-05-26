@@ -5,11 +5,10 @@
     <div class="alert-box">{{ message }}</div>
 
     <ul class="small-block-grid-2">
-      <li>
-        <img class="th" src="app/img/demo1.jpg" shows-message-when-hovered message="Im the first house.">
-      </li>
-      <li>
-        <img class="th" src="app/img/demo2.jpg" shows-message-when-hovered message="Im the second house.">
+      <li ng-repeat="house in houses">
+        <a href="#/detail/{{house.id}}">
+          <img class="th" src="app/img/{{house.fileName}}" />
+        </a>
       </li>
     </ul>
 
